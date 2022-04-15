@@ -1,9 +1,11 @@
 {
 	"common": 
 	{
+		"start_token": "START",
+		"fps_token": "ENABLE FPS",
 		"anchor_reach_token": "ENTER ANCHOR DISTANCE(cm)",
 		"size_token": "ENTER ROOM SIZE(cm2)",
-		"invalid_anchor_reach_token": "INVALID ANCHOR REACH",
-		"invalid_size_token": "INVALID SIZE"
+		"invalid_anchor_reach_token": "INVALID ANCHOR REACH (>= %s1cm)",
+		"invalid_size_token": "INVALID SIZE (>= %s1cm)"
 	}
 }

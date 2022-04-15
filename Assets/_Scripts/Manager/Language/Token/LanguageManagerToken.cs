@@ -4,6 +4,8 @@ namespace ARKit.Manager.Language.Token
     {
         public static class common
         {
+            public static string start_token { get { return LanguageManager.Instance.GetTranslation("common", "start_token"); } }
+            public static string fps_token { get { return LanguageManager.Instance.GetTranslation("common", "fps_token"); } }
             public static string anchor_reach_token { get { return LanguageManager.Instance.GetTranslation("common", "anchor_reach_token"); } }
             public static string size_token { get { return LanguageManager.Instance.GetTranslation("common", "size_token"); } }
             public static string invalid_anchor_reach_token { get { return LanguageManager.Instance.GetTranslation("common", "invalid_anchor_reach_token"); } }

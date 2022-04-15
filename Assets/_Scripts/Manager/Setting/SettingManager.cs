@@ -28,8 +28,11 @@ namespace ARKit.Manager.Setting
         }
         #endregion
 
-        private SettingData data;
-        public SettingData Data { get { return data; } }
+        private SettingData dataDefault;
+        public SettingData DataDefault { get { return dataDefault; } }
+
+        private SettingData dataCurrent;
+        public SettingData DataCurrent { get { return dataCurrent; } }
 
         private string path;
 
@@ -44,39 +47,37 @@ namespace ARKit.Manager.Setting
         {
             path = $"{Application.persistentDataPath}/setting.json";
 
-            string settings = null;
+            ResourceRequest request = Resources.LoadAsync<TextAsset>("Manager/Setting/setting");
+
+            yield return request;
+
+            string settings = ((TextAsset)request.asset).text;
 
             bool complete = false;
 
             new Thread(() =>
             {
+                dataDefault = JsonConvert.DeserializeObject<SettingData>(settings);
+
                 try
                 {
                     if (File.Exists(path))
-                    {
-                        settings = File.ReadAllText(path);
-
-                        data = JsonConvert.DeserializeObject<SettingData>(settings);
-                    }
+                        dataCurrent = JsonConvert.DeserializeObject<SettingData>(File.ReadAllText(path));
                 }
                 catch
                 {
 
                 }
+
+                complete = true;
             }).Start();
 
             yield return new WaitUntil(() => complete);
 
-            if (data != null)
+            if (dataCurrent != null)
                 yield break;
 
-            ResourceRequest request = Resources.LoadAsync<TextAsset>("Manager/Setting/setting");
-
-            yield return request;
-
-            settings = ((TextAsset)request.asset).text;
-
-            data = JsonConvert.DeserializeObject<SettingData>(settings);
+            dataCurrent = JsonConvert.DeserializeObject<SettingData>(settings);
 
             new Thread(() => File.WriteAllText(path, settings)).Start();
         }
@@ -87,7 +88,7 @@ namespace ARKit.Manager.Setting
 
             new Thread(() =>
             {
-                File.WriteAllText(path, JsonConvert.SerializeObject(data, Formatting.Indented));
+                File.WriteAllText(path, JsonConvert.SerializeObject(dataCurrent, Formatting.Indented));
 
                 complete = true;
             }).Start();

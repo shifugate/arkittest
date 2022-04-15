@@ -3,6 +3,7 @@ using ARKit.Manager.Language.Token;
 using ARKit.Manager.Setting;
 using ARKit.Manager.System;
 using ARKit.Util;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +11,18 @@ namespace ARKit.UI._Screen.Setting
 {
     public class SettingUI : MonoBehaviour
     {
+
+        [SerializeField]
+        private Toggle fpsToggle;
         [SerializeField]
         private InputFieldHelper sizeInputField;
         [SerializeField]
         private InputFieldHelper anchorReachInputField;
-        [SerializeField]
-        private Toggle fpsToggle;
 
         private void Awake()
         {
             AddListener();
+            SetProperties();
         }
 
         private void OnDestroy()
@@ -37,9 +40,16 @@ namespace ARKit.UI._Screen.Setting
             EventUtil.Setting.SaveComplete -= SaveComplete;
         }
 
+        private void SetProperties()
+        {
+            fpsToggle.isOn = SettingManager.Instance.DataCurrent.show_fps;
+            sizeInputField.text = SettingManager.Instance.DataCurrent.room_size.ToString();
+            anchorReachInputField.text = SettingManager.Instance.DataCurrent.anchor_reach.ToString();
+        }
+
         public void FPSToggleAction(bool enable)
         {
-            SystemManager.Instance.FPSEnableAction(enable);
+            SystemManager.Instance?.FPSEnableAction(enable);
         }
 
         private void SaveComplete()
@@ -50,20 +60,36 @@ namespace ARKit.UI._Screen.Setting
         private bool ValidForm()
         {
             bool valid = true;
+            int size;
+            int anchorReach;
 
             sizeInputField.SetError(null);
             anchorReachInputField.SetError(null);
 
-            if (!int.TryParse(sizeInputField.text, out int size))
+            if (!int.TryParse(sizeInputField.text, out size))
             {
-                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token);
+                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token.Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString()));
 
                 valid = false;
             }
 
-            if (!int.TryParse(anchorReachInputField.text, out int anchorReach))
+            if (size < SettingManager.Instance.DataDefault.room_size)
             {
-                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token);
+                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token.Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString()));
+
+                valid = false;
+            }
+
+            if (!int.TryParse(anchorReachInputField.text, out anchorReach))
+            {
+                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token.Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString()));
+
+                valid = false;
+            }
+
+            if (anchorReach < SettingManager.Instance.DataDefault.anchor_reach)
+            {
+                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token.Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString()));
 
                 valid = false;
             }
@@ -76,7 +102,10 @@ namespace ARKit.UI._Screen.Setting
             if (!ValidForm())
                 return;
 
-            SettingManager.Instance.Data.anchor_reach = int.Parse(sizeInputField.text);
+            SettingManager.Instance.DataCurrent.show_fps = fpsToggle.isOn;
+            SettingManager.Instance.DataCurrent.room_size = int.Parse(sizeInputField.text);
+            SettingManager.Instance.DataCurrent.anchor_reach = int.Parse(anchorReachInputField.text);
+            SettingManager.Instance.SaveAction();
         }
     }
 }

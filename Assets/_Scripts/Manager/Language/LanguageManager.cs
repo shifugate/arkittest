@@ -50,22 +50,17 @@ namespace ARKit.Manager.Language
 
         private void SetProperties()
         {
-            bool success = false;
+            contents.Clear();
 
-            while (!success)
-            {
-                contents.Clear();
+            TextAsset[] assets = Resources.LoadAll<TextAsset>("Manager/Language");
 
-                TextAsset[] assets = Resources.LoadAll<TextAsset>("Manager/Language");
+            foreach (TextAsset asset in assets)
+                contents.Add(asset.name, JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(asset.text));
 
-                foreach (TextAsset asset in assets)
-                    contents.Add(asset.name, JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(asset.text));
+            language = PlayerPrefs.HasKey("language") ? PlayerPrefs.GetString("language") : Enum.GetName(typeof(CountryCode), CountryCode.pt_PT);
 
-                language = PlayerPrefs.HasKey("language") ? PlayerPrefs.GetString("language") : Enum.GetName(typeof(CountryCode), CountryCode.pt_PT);
-
-                if (!Enum.TryParse(language, out CountryCode result))
-                    language = Enum.GetName(typeof(CountryCode), CountryCode.pt_PT);
-            }
+            if (!Enum.TryParse(language, out CountryCode result))
+                language = Enum.GetName(typeof(CountryCode), CountryCode.pt_PT);
         }
 
         public void SetLanguage(CountryCode language)

@@ -2,6 +2,8 @@
 using ARKit.MVC._Base;
 using ARKit.Util;
 using ARKit.UI._Screen.Setting;
+using System.Collections;
+using ARKit.Manager;
 
 namespace ARKit.MVC.Home
 {
@@ -19,8 +21,10 @@ namespace ARKit.MVC.Home
             RemoveListener();
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return new WaitUntil(() => InitializerManager.InitializeComplete);
+
             LoadScreen(ContentUtil.Constant.Screen.Setting);
         }
 

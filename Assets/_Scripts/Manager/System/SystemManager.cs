@@ -40,15 +40,22 @@ namespace ARKit.Manager.System
             Application.targetFrameRate = 60;
             Input.multiTouchEnabled = true;
 
-            FPSEnableAction(SettingManager.Instance.Data.show_fps);
+            FPSEnableAction(SettingManager.Instance.DataCurrent.show_fps);
         }
 
         public void FPSEnableAction(bool enable)
         {
             if (enable && !systemManagerFPSDisplaySupport)
-                systemManagerFPSDisplaySupport = gameObject.AddComponent<SystemManagerFPSDisplaySupport>();
+            {
+                GameObject go = new GameObject("SystemManagerFPSDisplaySupport");
+                go.transform.SetParent(gameObject.transform);
+
+                systemManagerFPSDisplaySupport = go.AddComponent<SystemManagerFPSDisplaySupport>();
+            }
             else if (!enable && systemManagerFPSDisplaySupport)
-                Destroy(systemManagerFPSDisplaySupport);
+            {
+                Destroy(systemManagerFPSDisplaySupport.gameObject);
+            }
         }
     }
 }
