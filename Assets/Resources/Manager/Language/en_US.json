@@ -6,6 +6,11 @@
 		"anchor_reach_token": "ENTER ANCHOR DISTANCE(cm)",
 		"size_token": "ENTER ROOM SIZE(cm2)",
 		"invalid_anchor_reach_token": "INVALID ANCHOR REACH (>= %s1cm)",
-		"invalid_size_token": "INVALID SIZE (>= %s1cm)"
+		"invalid_size_token": "INVALID SIZE (>= %s1cm)",
+		"move_interaction_token": "PRESS AWSD TO MOVE CAMERA",
+		"look_interaction_token": "USE MOUSE TO LOOK",
+		"exit_interaction_token": "PRESS P TO RETURN SETTINGS",
+		"add_interaction_token": "PRESS SPACE TO ADD A NEW ANCHOR",
+		"remove_interaction_token": "PRESS SPACE TO REMOVE ANCHOR"
 	}
 }

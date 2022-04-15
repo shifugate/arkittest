@@ -17,8 +17,12 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 684c1baeeb0cc724a9f040b42d07e0b4
   m_SerializeEntries:
-  - m_GUID: 7624399aeb4caf94c8124f2bf96b38f1
-    m_Address: Assets/_Addressables/UI/_Screen/Setting/SettingUI.prefab
+  - m_GUID: 7a7af932e10be354fbd9b5fbddd627c7
+    m_Address: Assets/_Addressables/UI/_Screen/Setting
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2a2ad644c57cd19449d7f7c9d362c136
+    m_Address: Assets/_Addressables/UI/_Screen/Anchor
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

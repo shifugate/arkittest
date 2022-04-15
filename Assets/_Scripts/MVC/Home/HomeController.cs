@@ -4,6 +4,8 @@ using ARKit.Util;
 using ARKit.UI._Screen.Setting;
 using System.Collections;
 using ARKit.Manager;
+using ARKit.UI._Screen.Anchor;
+using ARKit.Helper.Player;
 
 namespace ARKit.MVC.Home
 {
@@ -60,6 +62,10 @@ namespace ARKit.MVC.Home
             {
                 case ContentUtil.Constant.Screen.Setting:
                     await ContentUtil.LoadContent<SettingUI>("UI/_Screen/Setting/SettingUI.prefab", Model.UIHolder);
+                    break;
+                case ContentUtil.Constant.Screen.Anchor:
+                    await ContentUtil.LoadContent<AnchorUI>("UI/_Screen/Anchor/AnchorUI.prefab", Model.UIHolder);
+                    await ContentUtil.LoadContent<PlayerHelper>("Helper/Player/PlayerHelper.prefab", Model.SpaceHolder);
                     break;
             }
 

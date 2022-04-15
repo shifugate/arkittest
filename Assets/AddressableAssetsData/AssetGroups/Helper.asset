@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: cf5b74e8653b0a2438ea55ebb30414b4
   m_SerializeEntries:
-  - m_GUID: 706b3d0cf90e47e47bf0bb60d28ad907
-    m_Address: Assets/_Addressables/Helper/InputFieldHelper.prefab
+  - m_GUID: 22da244b58a81d947a74421a29188a34
+    m_Address: Assets/_Addressables/Helper/Player
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
