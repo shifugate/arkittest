@@ -1,0 +1,9 @@
+{
+	"common": 
+	{
+		"anchor_reach_token": "ENTER ANCHOR DISTANCE(cm)",
+		"size_token": "ENTER ROOM SIZE(cm2)",
+		"invalid_anchor_reach_token": "INVALID ANCHOR REACH",
+		"invalid_size_token": "INVALID SIZE"
+	}
+}
