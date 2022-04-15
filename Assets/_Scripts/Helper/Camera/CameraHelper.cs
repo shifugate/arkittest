@@ -4,80 +4,58 @@ namespace ARKit.Helper.Camera
 {
     public class CameraHelper : MonoBehaviour
     {
-        [SerializeField]
-        private float mainSpeed = 100.0f;
-        [SerializeField]
-        private float shiftAdd = 250.0f;
-        [SerializeField]
-        private float maxShift = 1000.0f;
-        [SerializeField]
-        private float camSens = 0.25f;
+		const float ACCELERATION = 10;
+		const float ACC_SPRINT_MULTIPLIER = 4;
+		const float LOOK_SENSITIVITY = 1;
+		const float DAMPING_COEFFICIENT = 5;
 
-        private Vector3 lastMouse = new Vector3(255, 255, 255);
-        private float totalRun = 1.0f;
+		private Vector3 velocity;
 
-        private void Update()
-        {
-            lastMouse = Input.mousePosition - lastMouse;
-            lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
-            lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
-            transform.eulerAngles = lastMouse;
-            lastMouse = Input.mousePosition;
+		void Update()
+		{
+			UpdateInput();
 
-            Vector3 p = GetBaseInput();
-            
-            if (p.sqrMagnitude > 0)
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    totalRun += Time.deltaTime;
-                    p = p * totalRun * shiftAdd;
-                    p.x = Mathf.Clamp(p.x, -maxShift, maxShift);
-                    p.y = Mathf.Clamp(p.y, -maxShift, maxShift);
-                    p.z = Mathf.Clamp(p.z, -maxShift, maxShift);
-                }
-                else
-                {
-                    totalRun = Mathf.Clamp(totalRun * 0.5f, 1f, 1000f);
-                    p = p * mainSpeed;
-                }
+			velocity = Vector3.Lerp(velocity, Vector3.zero, DAMPING_COEFFICIENT * Time.deltaTime);
 
-                p = p * Time.deltaTime;
-                
-                Vector3 newPosition = transform.position;
-                
-                if (Input.GetKey(KeyCode.Space))
-                {
-                    transform.Translate(p);
-                    newPosition.x = transform.position.x;
-                    newPosition.z = transform.position.z;
-                    transform.position = newPosition;
-                }
-                else
-                {
-                    transform.Translate(p);
-                }
-            }
-        }
+			transform.position += velocity * Time.deltaTime;
+		}
 
-        private Vector3 GetBaseInput()
-        {
-            Vector3 p_Velocity = new Vector3();
-            
-            if (Input.GetKey(KeyCode.W))
-                p_Velocity += new Vector3(0, 0, 1);
-            
-            if (Input.GetKey(KeyCode.S))
-                p_Velocity += new Vector3(0, 0, -1);
-            
+		void UpdateInput()
+		{
+			velocity += GetAccelerationVector() * Time.deltaTime;
 
-            if (Input.GetKey(KeyCode.A))
-                p_Velocity += new Vector3(-1, 0, 0);
-            
-            if (Input.GetKey(KeyCode.D))
-                p_Velocity += new Vector3(1, 0, 0);
-            
-            return p_Velocity;
-        }
-    }
+			Vector2 mouseDelta = LOOK_SENSITIVITY * new Vector2(Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
+
+			Quaternion rotation = transform.rotation;
+			Quaternion horiz = Quaternion.AngleAxis(mouseDelta.x, Vector3.up);
+			Quaternion vert = Quaternion.AngleAxis(mouseDelta.y, Vector3.right);
+
+			transform.rotation = horiz * rotation * vert;
+		}
+
+		Vector3 GetAccelerationVector()
+		{
+			Vector3 moveInput = default;
+
+			void AddMovement(KeyCode key, Vector3 dir)
+			{
+				if (Input.GetKey(key))
+					moveInput += dir;
+			}
+
+			AddMovement(KeyCode.W, Vector3.forward);
+			AddMovement(KeyCode.S, Vector3.back);
+			AddMovement(KeyCode.D, Vector3.right);
+			AddMovement(KeyCode.A, Vector3.left);
+			AddMovement(KeyCode.Space, Vector3.up);
+			AddMovement(KeyCode.LeftControl, Vector3.down);
+
+			Vector3 direction = transform.TransformVector(moveInput.normalized);
+
+			if (Input.GetKey(KeyCode.LeftShift))
+				return direction * (ACCELERATION * ACC_SPRINT_MULTIPLIER);
+
+			return direction * ACCELERATION;
+		}
+	}
 }

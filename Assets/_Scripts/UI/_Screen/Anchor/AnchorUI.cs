@@ -1,4 +1,5 @@
-﻿using ARKit.Manager.Language;
+﻿using ARKit.Helper.Camera;
+using ARKit.Manager.Language;
 using ARKit.Util;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ namespace ARKit.UI._Screen.Anchor
         [SerializeField]
         private Text interactionText;
 
-        private Camera mainCamera;
+        private CameraHelper cameraHelper;
         private bool createRoomComplete;
 
         private void Awake()
@@ -24,6 +25,11 @@ namespace ARKit.UI._Screen.Anchor
         private void OnDestroy()
         {
             RemoveListener();
+
+            cameraHelper.transform.position = Vector3.zero;
+            cameraHelper.transform.rotation = Quaternion.identity;
+
+            Destroy(cameraHelper);
 
             Cursor.visible = true;
         }
@@ -45,9 +51,7 @@ namespace ARKit.UI._Screen.Anchor
 
         private void SetProperties()
         {
-            mainCamera = Camera.main;
-            mainCamera.transform.position = Vector3.zero;
-            mainCamera.transform.rotation = Quaternion.identity;
+            cameraHelper = Camera.main.gameObject.AddComponent<CameraHelper>();
 
             Cursor.visible = false;
         }
