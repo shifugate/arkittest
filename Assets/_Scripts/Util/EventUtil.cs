@@ -13,5 +13,10 @@ namespace ARKit.Util
         {
             public static Action SaveComplete;
         }
+
+        public static class Anchror
+        {
+            public static Action CreateRoomComplete;
+        }
     }
 }

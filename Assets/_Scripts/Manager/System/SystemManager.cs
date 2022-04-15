@@ -37,7 +37,7 @@ namespace ARKit.Manager.System
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Screen.brightness = 1;
 
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 120;
             Input.multiTouchEnabled = true;
 
             FPSEnableAction(SettingManager.Instance.DataCurrent.show_fps);

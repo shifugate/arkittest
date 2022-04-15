@@ -12,14 +12,51 @@ namespace ARKit.UI._Screen.Anchor
         [SerializeField]
         private Text interactionText;
 
+        private Camera mainCamera;
+        private bool createRoomComplete;
+
         private void Awake()
         {
-            SetInteractionText(LanguageManager.Instance.GetTranslation("common", "add_interaction_token"));
+            AddListener();
+            SetProperties();
+        }
+
+        private void OnDestroy()
+        {
+            RemoveListener();
+
+            Cursor.visible = true;
         }
 
         private void Update()
         {
             UpdateInput();
+        }
+
+        private void AddListener()
+        {
+            EventUtil.Anchror.CreateRoomComplete += CreateRoomComplete;
+        }
+
+        private void RemoveListener() 
+        {
+            EventUtil.Anchror.CreateRoomComplete -= CreateRoomComplete;
+        }
+
+        private void SetProperties()
+        {
+            mainCamera = Camera.main;
+            mainCamera.transform.position = Vector3.zero;
+            mainCamera.transform.rotation = Quaternion.identity;
+
+            Cursor.visible = false;
+        }
+
+        private void CreateRoomComplete()
+        {
+            createRoomComplete = true;
+
+            SetInteractionText(LanguageManager.Instance.GetTranslation("common", "add_interaction_token"));
         }
 
         private void SetInteractionText(string anchorMessage = null)
@@ -36,6 +73,9 @@ namespace ARKit.UI._Screen.Anchor
 
         private void UpdateInput()
         {
+            if (!createRoomComplete)
+                return;
+
             if (Input.GetKeyDown(KeyCode.P))
                 EventUtil.Screen.LoadScreen?.Invoke(ContentUtil.Constant.Screen.Setting);
         }

@@ -42,6 +42,14 @@ namespace ARKit.UI._Screen.Setting
 
         private void SetProperties()
         {
+            sizeInputField.SetLabel(LanguageManagerToken.common.size_token
+                .Replace("%s1", SettingManager.Instance.DataCurrent.room_size.ToString())
+                .Replace("%s2", SettingManager.Instance.DataCurrent.room_max_size.ToString()));
+
+            anchorReachInputField.SetLabel(LanguageManagerToken.common.anchor_reach_token
+                .Replace("%s1", SettingManager.Instance.DataCurrent.anchor_reach.ToString())
+                .Replace("%s2", SettingManager.Instance.DataCurrent.anchor_max_reach.ToString()));
+
             fpsToggle.isOn = SettingManager.Instance.DataCurrent.show_fps;
             sizeInputField.text = SettingManager.Instance.DataCurrent.room_size.ToString();
             anchorReachInputField.text = SettingManager.Instance.DataCurrent.anchor_reach.ToString();
@@ -68,28 +76,38 @@ namespace ARKit.UI._Screen.Setting
 
             if (!int.TryParse(sizeInputField.text, out size))
             {
-                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token.Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString()));
+                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token
+                    .Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString())
+                    .Replace("%s2", SettingManager.Instance.DataCurrent.room_max_size.ToString()));
 
                 valid = false;
             }
 
-            if (size < SettingManager.Instance.DataDefault.room_size)
+            if (size < SettingManager.Instance.DataDefault.room_size
+                || size > SettingManager.Instance.DataDefault.room_max_size)
             {
-                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token.Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString()));
+                sizeInputField.SetError(LanguageManagerToken.common.invalid_size_token
+                    .Replace("%s1", SettingManager.Instance.DataDefault.room_size.ToString())
+                    .Replace("%s2", SettingManager.Instance.DataCurrent.room_max_size.ToString()));
 
                 valid = false;
             }
 
             if (!int.TryParse(anchorReachInputField.text, out anchorReach))
             {
-                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token.Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString()));
+                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token
+                    .Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString())
+                    .Replace("%s2", SettingManager.Instance.DataCurrent.anchor_max_reach.ToString()));
 
                 valid = false;
             }
 
-            if (anchorReach < SettingManager.Instance.DataDefault.anchor_reach)
+            if (anchorReach < SettingManager.Instance.DataDefault.anchor_reach
+                || anchorReach > SettingManager.Instance.DataDefault.anchor_max_reach)
             {
-                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token.Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString()));
+                anchorReachInputField.SetError(LanguageManagerToken.common.invalid_anchor_reach_token
+                    .Replace("%s1", SettingManager.Instance.DataDefault.anchor_reach.ToString())
+                    .Replace("%s2", SettingManager.Instance.DataCurrent.anchor_max_reach.ToString()));
 
                 valid = false;
             }

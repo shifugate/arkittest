@@ -6,6 +6,8 @@ namespace ARKit.Helper.UI
     public class InputFieldHelper : MonoBehaviour
     {
         [SerializeField]
+        private Text labeltext;
+        [SerializeField]
         private InputField inputField;
         [SerializeField]
         private Text errorText;
@@ -26,6 +28,11 @@ namespace ARKit.Helper.UI
         private void Awake()
         {
             errorText.enabled = false;
+        }
+
+        public void SetLabel(string label)
+        {
+            labeltext.text = label;
         }
 
         public void SetError(string error)
