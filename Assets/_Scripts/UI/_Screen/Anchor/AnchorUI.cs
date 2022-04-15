@@ -12,24 +12,19 @@ namespace ARKit.UI._Screen.Anchor
         private RectTransform interactionHolder;
         [SerializeField]
         private Text interactionText;
+        [SerializeField]
+        private Image reticleImage;
 
-        private CameraHelper cameraHelper;
         private bool createRoomComplete;
 
         private void Awake()
         {
             AddListener();
-            SetProperties();
         }
 
         private void OnDestroy()
         {
             RemoveListener();
-
-            cameraHelper.transform.position = Vector3.zero;
-            cameraHelper.transform.rotation = Quaternion.identity;
-
-            Destroy(cameraHelper);
 
             Cursor.visible = true;
         }
@@ -37,22 +32,25 @@ namespace ARKit.UI._Screen.Anchor
         private void Update()
         {
             UpdateInput();
+            UpdateCursor();
         }
 
         private void AddListener()
         {
             EventUtil.Anchror.CreateRoomComplete += CreateRoomComplete;
+            EventUtil.Anchror.RayInRoom += RayInRoom;
+            EventUtil.Anchror.RayOutOfRoom += RayOutOfRoom;
         }
 
         private void RemoveListener() 
         {
             EventUtil.Anchror.CreateRoomComplete -= CreateRoomComplete;
+            EventUtil.Anchror.RayInRoom -= RayInRoom;
+            EventUtil.Anchror.RayOutOfRoom -= RayOutOfRoom;
         }
 
-        private void SetProperties()
+        private void UpdateCursor()
         {
-            cameraHelper = Camera.main.gameObject.AddComponent<CameraHelper>();
-
             Cursor.visible = false;
         }
 
@@ -61,6 +59,16 @@ namespace ARKit.UI._Screen.Anchor
             createRoomComplete = true;
 
             SetInteractionText(LanguageManager.Instance.GetTranslation("common", "add_interaction_token"));
+        }
+
+        private void RayInRoom()
+        {
+            reticleImage.color = Color.green;
+        }
+
+        private void RayOutOfRoom()
+        {
+            reticleImage.color = Color.red;
         }
 
         private void SetInteractionText(string anchorMessage = null)

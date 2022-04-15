@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace ARKit.Util
 {
@@ -17,6 +18,10 @@ namespace ARKit.Util
         public static class Anchror
         {
             public static Action CreateRoomComplete;
+            public static Action RayOutOfRoom;
+            public static Action RayInRoom;
+            public static Action RayOutOfObject;
+            public static Action<GameObject, float> RayInObject;
         }
     }
 }

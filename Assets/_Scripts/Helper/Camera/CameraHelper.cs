@@ -4,58 +4,76 @@ namespace ARKit.Helper.Camera
 {
     public class CameraHelper : MonoBehaviour
     {
-		const float ACCELERATION = 10;
-		const float ACC_SPRINT_MULTIPLIER = 4;
-		const float LOOK_SENSITIVITY = 1;
-		const float DAMPING_COEFFICIENT = 5;
+        public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+        private RotationAxes axes = RotationAxes.MouseXAndY;
 
-		private Vector3 velocity;
+        private const float sensitivityX = 2F;
+        private const float sensitivityY = 2F;
+        private const float minimumY = -90F;
+        private const float maximumY = 90F;
+        private const float moveSpeed = 0.01f;
 
-		void Update()
-		{
-			UpdateInput();
+        private float rotationY = -60F;
 
-			velocity = Vector3.Lerp(velocity, Vector3.zero, DAMPING_COEFFICIENT * Time.deltaTime);
+        private void Update()
+        {
+            RotateCamera();
+            MoveCamera();
+        }
 
-			transform.position += velocity * Time.deltaTime;
-		}
+        private void RotateCamera()
+        {
+            if (axes == RotationAxes.MouseXAndY)
+            {
+                float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
 
-		void UpdateInput()
-		{
-			velocity += GetAccelerationVector() * Time.deltaTime;
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
 
-			Vector2 mouseDelta = LOOK_SENSITIVITY * new Vector2(Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
+                transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+            }
+            else if (axes == RotationAxes.MouseX)
+            {
+                transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+            }
+            else
+            {
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
 
-			Quaternion rotation = transform.rotation;
-			Quaternion horiz = Quaternion.AngleAxis(mouseDelta.x, Vector3.up);
-			Quaternion vert = Quaternion.AngleAxis(mouseDelta.y, Vector3.right);
+                transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
+            }
+        }
 
-			transform.rotation = horiz * rotation * vert;
-		}
+        private void MoveCamera()
+        {
+            Vector3 pos = transform.position;
 
-		Vector3 GetAccelerationVector()
-		{
-			Vector3 moveInput = default;
+            if (Input.GetKey(KeyCode.W))
+            {
+                pos = pos + transform.forward * moveSpeed;
 
-			void AddMovement(KeyCode key, Vector3 dir)
-			{
-				if (Input.GetKey(key))
-					moveInput += dir;
-			}
+                transform.position = pos;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                pos = pos - transform.forward * moveSpeed;
 
-			AddMovement(KeyCode.W, Vector3.forward);
-			AddMovement(KeyCode.S, Vector3.back);
-			AddMovement(KeyCode.D, Vector3.right);
-			AddMovement(KeyCode.A, Vector3.left);
-			AddMovement(KeyCode.Space, Vector3.up);
-			AddMovement(KeyCode.LeftControl, Vector3.down);
+                transform.position = pos;
+            }
 
-			Vector3 direction = transform.TransformVector(moveInput.normalized);
+            if (Input.GetKey(KeyCode.D))
+            {
+                pos = pos + transform.right * moveSpeed;
 
-			if (Input.GetKey(KeyCode.LeftShift))
-				return direction * (ACCELERATION * ACC_SPRINT_MULTIPLIER);
+                transform.position = pos;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                pos = pos - transform.right * moveSpeed;
 
-			return direction * ACCELERATION;
-		}
-	}
+                transform.position = pos;
+            }
+        }
+    }
 }
